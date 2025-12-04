@@ -4,13 +4,14 @@
 #include "net/rime/unicast.h"
 #include "dev/leds.h"
 #include "net/netstack.h"
+#include "powertrace.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 /*---------------------------------------------------------------------------*/
-// Definição da temperatura alvo e tolerância
+// Limiares de Temperatura (em Celsius)
 #define TEMP_TARGET 25
 #define TEMP_TOLERANCE 2 
 #define TEMP_MIN (TEMP_TARGET - TEMP_TOLERANCE) // 23 C
@@ -99,7 +100,7 @@ AUTOSTART_PROCESSES(&control_process);
 PROCESS_THREAD(control_process, ev, data)
 {
     PROCESS_BEGIN();
-
+    powertrace_start(CLOCK_SECOND * 10);
     // 1. Abre a conexão Collect (para receber dados)
     collect_open(&tc, 130, COLLECT_ROUTER, &collect_callbacks);
 

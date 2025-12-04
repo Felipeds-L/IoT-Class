@@ -1,5 +1,6 @@
 #include "contiki.h"
 #include "lib/random.h"
+#include "powertrace.h"
 
 // Inclusões de Rede Rime
 #include "net/rime/rime.h"
@@ -9,7 +10,7 @@
 
 // Inclusões de Periféricos e Sensores
 #include "dev/leds.h"       
-#include "dev/sht11/sht11-sensor.h" 
+#include "dev/sht11/sht11-sensor.h" // CORRIGIDO: Inclui o cabeçalho correto do SHT11 para simulação/hardware
 
 // Inclusões da Biblioteca Padrão
 #include <stdio.h>          
@@ -57,6 +58,7 @@ static int get_temp(void)
     
     current_temp_x10 += drift;
     
+    // ... (restante do código de limite de temperatura permanece o mesmo)
     if (current_temp_x10 < 150) current_temp_x10 = 150;
     if (current_temp_x10 > 350) current_temp_x10 = 350;
 
@@ -155,6 +157,8 @@ PROCESS_THREAD(control_process, ev, data)
     static struct etimer et;
 
     PROCESS_BEGIN();
+
+    powertrace_start(CLOCK_SECOND * 10);
 
     event_actuator_done = process_alloc_event();
     random_init(linkaddr_node_addr.u8[0]); // Inicializa a seed randômica
