@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*---------------------------------------------------------------------------*/
+
 // Limiares de Temperatura (em Celsius)
 #define TEMP_TARGET 25
 #define TEMP_TOLERANCE 2 
@@ -21,9 +21,9 @@
 static struct collect_conn tc;
 static struct unicast_conn uc;
 
-/*---------------------------------------------------------------------------*/
+
 // Funções Auxiliares de Comunicação
-/*---------------------------------------------------------------------------*/
+
 
 // Envia o comando de atuador (Unicast)
 static void send_command(const linkaddr_t *receiver, const char *command) {
@@ -61,9 +61,8 @@ static void check_and_command(int temp_celsius, const linkaddr_t *from)
     send_command(from, command_to_send);
 }
 
-/*---------------------------------------------------------------------------*/
 // Callbacks de Rede
-/*---------------------------------------------------------------------------*/
+
 
 // Callback para o Unicast (opcional, apenas para debug de recebimento)
 static void recv_unicast(struct unicast_conn *c, const linkaddr_t *from)
@@ -87,15 +86,15 @@ static void recv_collect(const linkaddr_t *originator, uint8_t seqno, uint8_t ho
     }
 }
 
-/*---------------------------------------------------------------------------*/
+
 static const struct collect_callbacks collect_callbacks = { recv_collect };
 static const struct unicast_callbacks unicast_callbacks = { recv_unicast, NULL };
-/*---------------------------------------------------------------------------*/
 
-/*---------------------------------------------------------------------------*/
+
+
 PROCESS(control_process, "Temperature Control Sink Process");
 AUTOSTART_PROCESSES(&control_process);
-/*---------------------------------------------------------------------------*/
+
 
 PROCESS_THREAD(control_process, ev, data)
 {
