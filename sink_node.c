@@ -4,7 +4,6 @@
 #include "net/rime/unicast.h"
 #include "dev/leds.h"
 #include "net/netstack.h"
-#include "powertrace.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,18 +26,19 @@ static struct unicast_conn uc;
 
 // Envia o comando de atuador (Unicast)
 static void send_command(const linkaddr_t *receiver, const char *command) {
+    printf(">> DECISÃO: Sink enviou comando '%s' para %d\n", 
+           command, receiver->u8[0]);
     packetbuf_clear();
     packetbuf_set_datalen(sprintf(packetbuf_dataptr(), "%s", command) + 1);
     unicast_send(&uc, receiver);
-    printf(">> DECISÃO: Sink enviou comando '%s' para %d.%d\n", 
-           command, receiver->u8[0], receiver->u8[1]);
+    
 }
 
 // Lógica de controle de Temperatura
 static void check_and_command(int temp_celsius, const linkaddr_t *from)
 {
     const char *command_to_send = NULL;
-    
+    const linkaddr_t *receiver = from;
     printf(">> DECISÃO: Lendo %d C. Target: %d-%d C.\n", 
            temp_celsius, TEMP_MIN, TEMP_MAX);
     
@@ -100,7 +100,6 @@ AUTOSTART_PROCESSES(&control_process);
 PROCESS_THREAD(control_process, ev, data)
 {
     PROCESS_BEGIN();
-    powertrace_start(CLOCK_SECOND * 10);
     // 1. Abre a conexão Collect (para receber dados)
     collect_open(&tc, 130, COLLECT_ROUTER, &collect_callbacks);
 

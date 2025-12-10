@@ -5,6 +5,12 @@
 // Inclusões de Rede Rime
 #include "net/rime/rime.h"
 #include "net/rime/collect.h"
+#include "net/rime/unicast.h"#include "contiki.h"
+#include "lib/random.h"
+
+// Inclusões de Rede Rime
+#include "net/rime/rime.h"
+#include "net/rime/collect.h"
 #include "net/rime/unicast.h"
 #include "net/netstack.h"
 
@@ -158,7 +164,6 @@ PROCESS_THREAD(control_process, ev, data)
 
     PROCESS_BEGIN();
 
-    powertrace_start(CLOCK_SECOND * 10);
 
     event_actuator_done = process_alloc_event();
     random_init(linkaddr_node_addr.u8[0]); // Inicializa a seed randômica
@@ -183,7 +188,6 @@ PROCESS_THREAD(control_process, ev, data)
     else {
         printf("I am remote node - Sensor/Atuador\n");
         
-        etimer_set(&et, 120 * CLOCK_SECOND);
         PROCESS_WAIT_UNTIL(etimer_expired(&et)); // Espera a rede estabilizar
     
         while(1) {
