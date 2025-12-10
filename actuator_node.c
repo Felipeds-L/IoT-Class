@@ -23,15 +23,14 @@
 #include <stdlib.h>         
 #include <string.h>         
 
-/*---------------------------------------------------------------------------*/
 // Declarações de Processo
-/*---------------------------------------------------------------------------*/
+
 PROCESS(control_process, "Temperature Sensor/Actuator Process");
 AUTOSTART_PROCESSES(&control_process);
 
-/*---------------------------------------------------------------------------*/
+
 // Variáveis e Estruturas Globais
-/*---------------------------------------------------------------------------*/
+
 static struct collect_conn tc;
 static struct unicast_conn uc;
 static struct etimer re_send_timer; 
@@ -41,9 +40,9 @@ static volatile int actuation_just_occurred = 0;
 // Variável estática para simular a temperatura atual do ambiente (x10 para precisão)
 static int current_temp_x10 = 250; 
 
-/*---------------------------------------------------------------------------*/
+
 // Funções Auxiliares
-/*---------------------------------------------------------------------------*/
+
 
 // Função de Leitura de Temperatura (SIMULADA E RANDÔMICA)
 static int get_temp(void)
@@ -87,7 +86,6 @@ static void simulate_actuator(const char *command) {
         printf("Comando de atuador desconhecido: %s\n", command);
     }
     
-    // Feedback visual breve
     leds_off(LEDS_RED | LEDS_GREEN);
     printf(">> Temp simulada FORÇADA para: %d C\n", current_temp_x10 / 10);
     
@@ -121,9 +119,9 @@ static void send_sensor_reading(void) {
     }
 }
 
-/*---------------------------------------------------------------------------*/
+
 // Callbacks de Rede
-/*---------------------------------------------------------------------------*/
+
 
 // Callback para o Unicast (RECEBE comando do Sink)
 static void recv_command(struct unicast_conn *c, const linkaddr_t *from)
@@ -151,10 +149,10 @@ static void recv_collect(const linkaddr_t *originator, uint8_t seqno, uint8_t ho
      }
 }
 
-/*---------------------------------------------------------------------------*/
+
 static const struct collect_callbacks collect_callbacks = { recv_collect };
 static const struct unicast_callbacks unicast_callbacks = { recv_command, NULL };
-/*---------------------------------------------------------------------------*/
+
 
 
 PROCESS_THREAD(control_process, ev, data)
